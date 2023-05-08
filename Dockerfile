@@ -17,5 +17,5 @@ RUN apt update -y \
 # Build application
 WORKDIR /app
 
-CMD ["godot"]
+ENTRYPOINT ["godot"]
 
