@@ -1,0 +1,102 @@
+name: Build and Push Docker Images
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    strategy:
+      matrix:
+        godot_version: [
+            # Unsupported versions (for now)
+            # The double commented out versions seem to not be working
+            # https://github.com/rivet-gg/godot-docker/issues/2
+            # # "2.0",
+            # # "2.0.1",
+            # # "2.0.2",
+            # # "2.0.3",
+            # # "2.0.4.1",
+            # "2.1",
+            # "2.1.1",
+            # "2.1.2",
+            # "2.1.3",
+            # "2.1.4",
+            # "2.1.5",
+            # "2.1.6",
+            # # "2.1.7",
+            # # "3.0",
+            # # "3.0.1",
+            # # "3.0.2",
+            # # "3.0.3",
+            # # "3.0.4",
+            # # "3.0.5",
+            # "3.0.6",
+            # "3.1",
+            # "3.1.1",
+            # "3.1.2",
+            # "3.2",
+            # "3.2.1",
+            # "3.2.2",
+            # "3.2.3",
+            # # "3.2.4",
+            # "3.3",
+            # "3.3.1",
+            # "3.3.2",
+            # "3.3.3",
+            # "3.3.4",
+            # "3.4",
+            # "3.4.1",
+            # "3.4.2",
+            # "3.4.3",
+            # "3.4.4",
+            # "3.4.5",
+            # "3.5",
+            # "3.5.1",
+            # "3.5.2",
+            # "3.5.3",
+            # # "3.6",
+            # "4.0",
+            # "4.0.1",
+            # "4.0.2",
+            # "4.0.3",
+            # "4.0.4",
+            # "4.1",
+            # "4.1.1",
+            # "4.1.2",
+            # "4.1.3",
+            # Supported versions with plugin
+            "4.2",
+            "4.2.1",
+          ]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Lowercase REPO
+        run: |
+          echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
+        
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: godot/Dockerfile
+          push: true
+          tags: ghcr.io/${{ env.REPO }}/godot:${{ matrix.godot_version }}
+          build-args: |
+            GODOT_VERSION=${{ matrix.godot_version }}
