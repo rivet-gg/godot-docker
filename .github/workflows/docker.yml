@@ -95,7 +95,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: godot/Dockerfile
+          file: Dockerfile
           push: true
           tags: ghcr.io/${{ env.REPO }}/godot:${{ matrix.godot_version }}
           build-args: |
