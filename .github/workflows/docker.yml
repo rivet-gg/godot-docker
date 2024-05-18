@@ -15,6 +15,7 @@ jobs:
             # Unsupported versions (for now)
             # The double commented out versions seem to not be working
             # https://github.com/rivet-gg/godot-docker/issues/2
+            # Full list of versions available here: https://godotengine.org/download/archive/
             # # "2.0",
             # # "2.0.1",
             # # "2.0.2",
