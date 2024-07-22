@@ -2,38 +2,38 @@
 
 These Dockerfiles help get up and running with Godot 4.
 
-## Uprading Godot
+## Upgrading Godot
 
 The container can be built with
 
 ```bash
-docker build --build-arg GODOT_VERSION=4.2.1 .
+docker build --build-arg GODOT_VERSION=4.2.2 .
 ```
 
 [See available Godot versions](https://downloads.tuxfamily.org/godotengine/)
 
 ## Recommended usage
 
-### Isolated build environments
+### Isolated Build Environments
 
 Godot projects can be built quickly by mounting volumes like:
 
 ```bash
 mkdir -p build/linux
-docker run -v "$(pwd):/app" ghcr.io/rivet-gg/godot-docker/godot:4.2.1 \
+docker run -v "$(pwd):/app" rivetgg/godot-docker/godot:4.2.2 \
     --export-release "Linux/X11" \
     --headless ./build/linux/game.x86_64
 ```
 
 See also [godot-ci](https://github.com/abarichello/godot-ci) for Dockerfiles tailored for CI environments.
 
-### Containerizing for production
+### Containerizing For Production
 
 If running Godot as a dedicated server in production, we recommend using the following Dockerfile:
 
 ```dockerfile
 # MARK: Builder
-FROM ghcr.io/rivet-gg/godot-docker/godot:4.2.1 AS builder
+FROM rivetgg/godot-docker/godot:4.2.2 AS builder
 COPY . .
 RUN mkdir -p build/linux \
     && godot -v --export-release "Linux/X11" --headless ./build/linux/game.x86_64
@@ -49,3 +49,10 @@ COPY --from=builder /app/build/linux/ /app
 # Unbuffer output so the logs get flushed
 CMD ["sh", "-c", "unbuffer /app/game.x86_64 --verbose --headless -- --server | cat"]
 ```
+
+## FAQ
+
+### Why use Docker Hub instead of GitHub Container Registry?
+
+GHCR requires authentication with your GitHub account in order to pull images. Many developer don't have this set up, so we opt to use Docker Hub, since it does not require authentication.
+
