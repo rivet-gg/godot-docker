@@ -7,10 +7,10 @@ These Dockerfiles help get up and running with Godot 4.
 The container can be built with
 
 ```bash
-docker build --build-arg GODOT_VERSION=4.2.2 .
+docker build --build-arg GODOT_VERSION=4.2 .
 ```
 
-[See available Godot versions](https://downloads.tuxfamily.org/godotengine/)
+[See available Godot versions](https://github.com/godotengine/godot/releases/)
 
 ## Recommended usage
 
@@ -20,7 +20,7 @@ Godot projects can be built quickly by mounting volumes like:
 
 ```bash
 mkdir -p build/linux
-docker run -v "$(pwd):/app" rivetgg/godot-docker/godot:4.2.2 \
+docker run -v "$(pwd):/app" rivetgg/godot:4.2 \
     --export-release "Linux/X11" \
     --headless ./build/linux/game.x86_64
 ```
@@ -33,7 +33,7 @@ If running Godot as a dedicated server in production, we recommend using the fol
 
 ```dockerfile
 # MARK: Builder
-FROM rivetgg/godot-docker/godot:4.2.2 AS builder
+FROM rivetgg/godot:4.2 AS builder
 COPY . .
 RUN mkdir -p build/linux \
     && godot -v --export-release "Linux/X11" --headless ./build/linux/game.x86_64
